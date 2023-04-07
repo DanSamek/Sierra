@@ -2,7 +2,7 @@
 #define Movegen
 
 namespace Movegen{
-    void generateAllMoves(int board[], int player);
+    void generateAllMoves(int board[][8], int player);
 }
 
 #endif

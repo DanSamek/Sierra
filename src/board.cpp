@@ -3,22 +3,9 @@
 #include <string>
 #include <iostream>
 
-std::unordered_map<char, uint8_t> boardValues = {
-    // white uppercase, black lowercase
-    {'P', 1},
-    {'N', 2},
-    {'B', 3},
-    {'R', 4},
-    {'Q', 5},
-    {'K', 7},
-    {'p', 17},
-    {'n', 18},
-    {'b', 19},
-    {'r', 20},
-    {'q', 21},
-    {'k', 23},
+std::unordered_map<char, uint8_t> pieceIDs = {
+    {'P', 1}, {'N', 2}, {'B', 3}, {'R', 4}, {'Q', 5}, {'K', 7}, {'p', 17}, {'n', 18}, {'b', 19}, {'r', 20},{'q', 21},{'k', 23},
 };
-
 /*
     a b c d e f g h 
  8  0 1 2 3 4 5 6 7
@@ -39,9 +26,9 @@ void Board::parseFen(std::string& fenPosition){
     int column = 0;
     for(auto p: fenPosition){
         // try find value in map
-        bv = boardValues.find(p);
+        bv = pieceIDs.find(p);
         // not succ
-        if(bv == boardValues.end()){
+        if(bv == pieceIDs.end()){
             if(p == '/'){
                 column++;
                 row = 0;
