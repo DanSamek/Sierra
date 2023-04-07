@@ -1,10 +1,9 @@
 #include<string>
-#include "fenparser.cpp"
-std::string FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+#include "board.cpp"
+std::string FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
 
 int main(int argc, char* argv[]){
 	if(argv[1]) FEN = argv[1];	
-	int board[8][8];
-	FenParser::parseFen(FEN, board);
+	Board::parseFen(FEN);
 	return 0;
 }
