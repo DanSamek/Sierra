@@ -1,5 +1,5 @@
 #include <string>
-
+#include <unordered_map>
 #ifndef board_h
 #define board_h
 
@@ -10,10 +10,8 @@ class board
 public:
     int* board;
     bool player;
-    bool* castles;
-    std::string enPassand;
-    int halfMoveClock;
-    int fullMoveNumber;
+    std::unordered_map<char, bool> castles;
+    std::string enpassant;
 };
 void parseFen(std::string& fen);
 
