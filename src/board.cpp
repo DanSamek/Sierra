@@ -34,14 +34,14 @@ void Board::parseFen(std::string& fenPosition){
                 row = 0;
                 continue;
             } 
-            else if(p == '-') board.enPassand = false;
             else{
-                int x = static_cast<int>(p);
+                int x = static_cast<int>(p - '0');
                 for (size_t i = 0; i < x; i++)
                 {
                     b[column][row] = 0;
                     row++;
                 }
+                continue;
             }
             row++;
             continue;
@@ -50,10 +50,12 @@ void Board::parseFen(std::string& fenPosition){
         row++;
     }
     // just for test
+    /*
     for (size_t i = 0; i < 8; i++){
         for (size_t x = 0; x < 8; x++){
             std::cout << b[i][x] << " ";
         }   
         std::cout << "\n";
     }
+    */
 }
