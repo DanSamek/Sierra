@@ -1,14 +1,23 @@
 #include<string>
 #include "board.cpp"
-std::string FEN = "rnbqkbnr/8/8/pppppppp/PPPP1PPP/8/8/RNBQKBNR w KQkq h6 0 1";
+#include "movegen.cpp"
+std::string FEN = "r1bqk2r/8/8/4B3/8/8/P7/RN1QKN1R w KQkq - 0 1";
 
 int main(int argc, char* argv[]){
-	if(argv[1] == "FEN"){
-		Board::parseFen(FEN);
+	if(argc < 2)
+	{
+		std::cout << "2 args needed!!";
+		return 0;
+	}
+	std::string task(argv[1]);
+	//std::string FEN(argv[2]);
+	if(task == "FEN"){
+		Board::board b = Board::parseFen(FEN);
+		Movegen::generateAllMoves(b.board, 1);
 	} 
-	if (argv[1] == "perft"){
+	if (task == "perft"){
+		// max depth 9
 		int perftDepth = (int)argv[2] - '0';
-		// Todo
 	} 
 	return 0;
 }

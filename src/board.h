@@ -5,15 +5,17 @@
 
 namespace Board{
 
-class board
+struct board
 {
-public:
-    int* board;
+    int board[8][8];
     bool player;
     std::unordered_map<char, bool> castles;
     std::string enpassant;
+
+    int enpassantColumn;
+    int enpassantRow;
 };
-void parseFen(std::string& fen);
+Board::board parseFen(std::string& fen);
 
 }    
 

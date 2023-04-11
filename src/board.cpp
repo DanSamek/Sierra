@@ -1,10 +1,11 @@
 #include "board.h"
+#include"movegen.h"
 #include <unordered_map>
 #include <string>
 #include <iostream>
 
-std::unordered_map<char, uint8_t> pieceIDs = {
-    {'P', 1}, {'N', 2}, {'B', 3}, {'R', 4}, {'Q', 5}, {'K', 7}, {'p', 17}, {'n', 18}, {'b', 19}, {'r', 20},{'q', 21},{'k', 23},
+std::unordered_map<char, int8_t> pieceIDs = {
+    {'P', 1}, {'N', 2}, {'B', 3}, {'R', 4}, {'Q', 5}, {'K', 7}, {'p', -1}, {'n', -2}, {'b', -3}, {'r', -4},{'q', -5},{'k', -7},
 };
 
 std::unordered_map<char, bool> castles = {
@@ -21,11 +22,10 @@ std::unordered_map<char, bool> castles = {
  2  6
  1  7
 */
-void Board::parseFen(std::string& fenPosition){
-    std::unordered_map<char,uint8_t>::const_iterator bv;
+Board::board Board::parseFen(std::string& fenPosition){
+    std::unordered_map<char,int8_t>::const_iterator bv;
     Board::board board;
-    int b[8][8];
-    for(int i = 0; i < 8; i++) for(int y = 0; y < 8;y++) b[i][y] = -1;
+    for(int i = 0; i < 8; i++) for(int y = 0; y < 8;y++) board.board[i][y] = -1;
 
     int row = 0;
     int column = 0;
@@ -46,7 +46,7 @@ void Board::parseFen(std::string& fenPosition){
                 int x = static_cast<int>(p - '0');
                 for (size_t i = 0; i < x; i++)
                 {
-                    b[column][row] = 0;
+                    board.board[column][row] = 0;
                     row++;
                 }
                 continue;
@@ -54,9 +54,9 @@ void Board::parseFen(std::string& fenPosition){
             row++;
             continue;
         }
-        b[column][row] = bv->second;
+        board.board[column][row] = bv->second;
         row++;
-        if(b[7][7] != -1) break;
+        if(board.board[7][7] != -1) break;
     }
 
     // parse items after board pos
@@ -79,9 +79,10 @@ void Board::parseFen(std::string& fenPosition){
     // just for test    
     for (size_t i = 0; i < 8; i++){
         for (size_t x = 0; x < 8; x++){
-            std::cout << b[i][x] << " ";
+            std::cout << board.board[i][x] << " ";
         }   
         std::cout << "\n";
     }
+    return (board);
     
 }
