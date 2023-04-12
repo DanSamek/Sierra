@@ -8,7 +8,7 @@ namespace Board{
 struct board
 {
     int board[8][8];
-    bool player;
+    int player;
     std::unordered_map<char, bool> castles;
     std::string enpassant;
 

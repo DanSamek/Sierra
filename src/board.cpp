@@ -11,6 +11,7 @@ std::unordered_map<char, int8_t> pieceIDs = {
 std::unordered_map<char, bool> castles = {
     {'K', false},{'Q', false},{'q', false},{'k', false}
 };
+
 /*
     a b c d e f g h 
  8  0 1 2 3 4 5 6 7
@@ -32,6 +33,7 @@ Board::board Board::parseFen(std::string& fenPosition){
     // Base part for FEN
     int fIndex = -1;
     for(auto p: fenPosition){
+        if(board.board[7][7] != -1) break;
         // try find value in map
         bv = pieceIDs.find(p);
         fIndex++;
@@ -42,29 +44,26 @@ Board::board Board::parseFen(std::string& fenPosition){
                 row = 0;
                 continue;
             } 
-            else{
-                int x = static_cast<int>(p - '0');
-                for (size_t i = 0; i < x; i++)
-                {
-                    board.board[column][row] = 0;
-                    row++;
-                }
-                continue;
+            // parse int to board
+            int x = static_cast<int>(p - '0');
+            for (size_t i = 0; i < x; i++)
+            {
+                board.board[column][row] = 0;
+                row++;
             }
-            row++;
             continue;
         }
         board.board[column][row] = bv->second;
         row++;
-        if(board.board[7][7] != -1) break;
     }
 
     // parse items after board pos
     fIndex += 2;
     for(fIndex; fIndex < fenPosition.length(); fIndex++){
         if(fenPosition[fIndex] == ' ') continue;
-        if(fenPosition[fIndex] == 'w' ) board.player = true;
-        if(fenPosition[fIndex] == 'b' ) board.player = false;
+        // which player
+        if(fenPosition[fIndex] == 'w' ) board.player = 1;
+        if(fenPosition[fIndex] == 'b' ) board.player = -1;
         if(castles.find(fenPosition[fIndex]) != castles.end()) castles[fenPosition[fIndex]] = true;
         if(fenPosition[fIndex] == 'w' || fenPosition[fIndex] == 'b' ||
         fenPosition[fIndex] == '-' || castles.find(fenPosition[fIndex]) != castles.end()) continue;

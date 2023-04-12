@@ -10,16 +10,13 @@ namespace Movegen{
     {
         int row;
         int column;
-        int piece;
+        int prevRow;
+        int prevColumn;
     };
     static vector<Movegen::Move> generateAllMoves(int board[8][8], int player);
-    /*
-    std::vector<Move> generatePawnMoves(int column, int row, int color);
-    std::vector<Move> generateKnightMoves(int column, int row, int color);
-    std::vector<Move> generateRookMoves(int column, int row, int color);    
-    std::vector<Move> generateQueenMoves(int column, int row, int color);
-    std::vector<Move> generateKingMoves(int column, int row, int color);
-    */
+    static vector<Movegen::Move> generateSlidingMoves(int &column, int &row, int &player, int board[][8], int value);
+    static vector<Movegen::Move> generateKnightMoves(int &column, int &row, int &player, int board[][8]);
+    static vector<Movegen::Move> generatePawnMoves(int &column, int &row, int &player, int board[][8], int &enPassantColumn, int &enPassantRow);
 }
 
 #endif
