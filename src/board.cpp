@@ -75,13 +75,5 @@ Board::board Board::parseFen(std::string& fenPosition){
             fIndex++;
         }
     }
-    // just for test    
-    for (size_t i = 0; i < 8; i++){
-        for (size_t x = 0; x < 8; x++){
-            std::cout << board.board[i][x] << " ";
-        }   
-        std::cout << "\n";
-    }
-    return (board);
-    
+    return board;
 }

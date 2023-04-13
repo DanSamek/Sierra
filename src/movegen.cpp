@@ -3,6 +3,7 @@
 #include<unordered_map>
 
 #include "movegen.h"
+#include "board.h"
 using namespace std;
 
 #define BLACK -1
@@ -10,74 +11,82 @@ using namespace std;
 
 bool isValidMove(int &column, int &row, int &player, int board[][8]);
 bool isPieceCapture(int &column, int &row, int &player,int board[][8]);
+bool isValidMovePawn(int &column, int &row, int &player, int board[][8]);
 vector<Movegen::Move> generateSlidingMoves(int &column, int &row, int &player, int board[][8], int value);
-vector<Movegen::Move> generateKnightMoves(int &column, int &row, int &player, int board[][8]);
 vector<Movegen::Move> generatePawnMoves(int &column, int &row, int &player, int board[][8], int &enPassantColumn, int &enPassantRow);
 
 // how pieces moves
 const unordered_map<int, vector<int>> pieceMoves = {
+    {1,{1,-1}},
+    {2, {2,1,2,-1,1,2,1,-2,-1,2,-1,-2,-2,1,-2,-1} },
     {3, {1,1,-1,-1,1,-1,-1,1}},
     {4, {1,0,0,1,-1,0,0,-1}},
-    {5, {1,1,-1,-1,1,-1,-1,1,1,0,0,1,-1,0,0,-1}},
+    {5, {1,1,-1,-1,1,-1,-1,1,1,0,0,1,-1,0,0,-1}}
 };
 
 // generate all moves for current player
-vector<Movegen::Move> generateAllMoves(int board[8][8], int player){    
+vector<Movegen::Move> generateAllMoves(Board::board &board, int player){
     vector<Movegen::Move> moves;
     vector<Movegen::Move> gm;
     for(int c = 0; c< 8;c++){
         for(int r = 0; r< 8;r++){
             // empty space, no piece here
-            if(board[c][r] == 0) continue;
+            if(board.board[c][r] == 0) continue;
 
-            if(board[c][r] == player * 1)
+            if(board.board[c][r] == player * 1)
             {
-                // pawns
+                gm = Movegen::generatePawnMoves(c,r,player, board.board, board.enpassantColumn, board.enpassantRow);
+                moves.insert(moves.end(),gm.begin(),gm.end());   
             }
-            if(board[c][r] == player * 2)
+            if(board.board[c][r] == player * 2)
             {
                 // knight
+                gm = Movegen::generateSlidingMoves(c,r,player, board.board, 2);
+                moves.insert(moves.end(),gm.begin(),gm.end());
             }
-            if(board[c][r] == player * 3)
+            if(board.board[c][r] == player * 3)
             { 
                 // bishop
-                gm = Movegen::generateSlidingMoves(c,r,player, board, 3);
+                gm = Movegen::generateSlidingMoves(c,r,player, board.board, 3);
                 moves.insert(moves.end(),gm.begin(),gm.end());
             }
-            if(board[c][r] == player * 4)
+            if(board.board[c][r] == player * 4)
             {
                 // rook
-                gm  = Movegen::generateSlidingMoves(c,r,player, board, 4);
+                gm  = Movegen::generateSlidingMoves(c,r,player, board.board, 4);
                 moves.insert(moves.end(),gm.begin(),gm.end());
             }
-            if(board[c][r] == player * 5)
+            if(board.board[c][r] == player * 5)
             {
-                gm = Movegen::generateSlidingMoves(c,r,player, board, 5);
+                gm = Movegen::generateSlidingMoves(c,r,player, board.board, 5);
                 moves.insert(moves.end(),gm.begin(),gm.end());
-                gm = Movegen::generateSlidingMoves(c,r,player, board, 7);
+                gm = Movegen::generateSlidingMoves(c,r,player, board.board, 7);
                 moves.insert(moves.end(),gm.begin(),gm.end());
             }
-            if(board[c][r] ==  player * 7)
+            if(board.board[c][r] ==  player * 7)
             {
-                gm = Movegen::generateSlidingMoves(c,r,player, board, 7);
+                gm = Movegen::generateSlidingMoves(c,r,player, board.board, 7);
                 moves.insert(moves.end(),gm.begin(),gm.end());
             }
         }
     }    
-    /*
-    for(auto m: moves){
-        for (size_t c = 0; c < 8; c++){
-            for (size_t r = 0; r < 8; r++){
+    
+    bool mb = false;
+    for (size_t c = 0; c < 8; c++){
+        for (size_t r = 0; r < 8; r++){
+            for(auto m: moves){
                 if(m.column == c && m.row == r) {
                     std::cout << "\033[1;31mX \033[0m";
-                    continue;
+                    mb = true;
+                    break;
                 }
-                std::cout << board[c][r] << " ";
-        }   
-        std::cout << "\n";
+            }
+            if(!mb) std::cout << board.board[c][r] << " ";
+            mb = false;
         }
-    }
-    */
+        std::cout << "\n";
+    }   
+    
     return moves;
 }
 
@@ -87,12 +96,16 @@ bool isValidMove(int &column, int &row, int &player, int board[][8]){
     if(player == 1) return  column < 8 && column >= 0 && row >= 0 && row < 8 && board[column][row] <= 0;
 }
 
+bool isValidMovePawn(int &column, int &row, int &player, int board[][8]){
+    return column < 8 && column >= 0 && row >= 0 && row < 8 && board[column][row] == 0;
+}
+
 bool isPieceCapture(int &column, int &row, int &player, int board[][8]){
     if(player == -1) return board[column][row] > 0;
     if(player == 1) return board[column][row] < 0;
 }
 
-// for rook, queen, bishop and king
+// for rook, queen, bishop, knight and king
 vector<Movegen::Move> generateSlidingMoves(int &column, int &row, int &player, int board[][8], int value){
     vector<Movegen::Move> moves;
     vector<int> ms;
@@ -105,7 +118,7 @@ vector<Movegen::Move> generateSlidingMoves(int &column, int &row, int &player, i
             Move m {currRow, currColumn, row, column};
             moves.push_back(m);
             // only first move from all sides for king
-            if(value == 7) break;
+            if(value == 7 || value == 2 ) break;
             if(isPieceCapture(currColumn, currRow, player, board)) break;
             currColumn += ms[i];
             currRow += ms[i+1];
@@ -116,12 +129,30 @@ vector<Movegen::Move> generateSlidingMoves(int &column, int &row, int &player, i
 
 vector<Movegen::Move> generatePawnMoves(int &column, int &row, int &player, int board[][8], int &enPassantColumn, int &enPassantRow){
     vector<Movegen::Move> moves;
+    // check normal moves
+    int currRow;
+    int currColumn;
+    for(int i = 1; i < 3;i++){
+        currColumn = column - (player * i);
+        if(!isValidMovePawn(currColumn, row, player, board)) break;
+        Move m {row, currColumn, row, column };
+        moves.push_back(m);
+        // only first move double 
+        if((player == 1 && column != 6 ) || (player == -1 && column != 1 )) break;
+    }    
 
-    return moves;
-}
+    // check captures
+    vector<int> ms;
+    ms = pieceMoves.at(1);
+    for(auto mss: ms){
+        currColumn = column - player;
+        currRow = row + mss;
+        if(!isPieceCapture(currColumn, currRow, player, board)) continue;
+        Move m {currRow, currColumn, row, column };
+        moves.push_back(m);
+    }
 
-vector<Movegen::Move> generateKnightMoves(int &column, int &row, int &player, int board[][8]){
-    vector<Movegen::Move> moves;
-
+    // en-passant
+    // todo
     return moves;
 }
