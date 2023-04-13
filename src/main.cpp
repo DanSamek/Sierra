@@ -1,7 +1,7 @@
 #include<string>
 #include "board.cpp"
 #include "movegen.cpp"
-std::string FEN = "k7/p7/8/8/8/P7/8/7K w - - 0 1";
+std::string FEN = "k7/8/8/5pP1/8/8/8/K7 w - f6 0 1";
 
 int main(int argc, char* argv[]){
 	if(argc < 2)	

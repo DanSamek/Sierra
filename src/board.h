@@ -10,8 +10,7 @@ struct board
     int board[8][8];
     int player;
     std::unordered_map<char, bool> castles;
-    std::string enpassant;
-
+    
     int enpassantColumn;
     int enpassantRow;
 };

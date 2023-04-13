@@ -12,6 +12,10 @@ std::unordered_map<char, bool> castles = {
     {'K', false},{'Q', false},{'q', false},{'k', false}
 };
 
+const std::unordered_map<char, int> boardAlphabet = {
+    {'a', 0},{'b', 1},{'c', 2},{'d', 3},{'e', 4},{'f', 5},{'g', 6},{'h', 7},
+};
+
 /*
     a b c d e f g h 
  8  0 1 2 3 4 5 6 7
@@ -70,8 +74,8 @@ Board::board Board::parseFen(std::string& fenPosition){
         // hello enpassant
         if(static_cast<int>(fenPosition[fIndex]) >= 81)
         {
-            board.enpassant += fenPosition[fIndex];
-            board.enpassant += fenPosition[++fIndex];
+            board.enpassantRow = boardAlphabet.at(fenPosition[fIndex]);
+            board.enpassantColumn =  8 - static_cast<int>(fenPosition[fIndex + 1] - '0');
             fIndex++;
         }
     }

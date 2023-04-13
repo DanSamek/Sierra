@@ -14,6 +14,7 @@ bool isPieceCapture(int &column, int &row, int &player,int board[][8]);
 bool isValidMovePawn(int &column, int &row, int &player, int board[][8]);
 vector<Movegen::Move> generateSlidingMoves(int &column, int &row, int &player, int board[][8], int value);
 vector<Movegen::Move> generatePawnMoves(int &column, int &row, int &player, int board[][8], int &enPassantColumn, int &enPassantRow);
+vector<Movegen::Move> generateKingCastles(int player, std::unordered_map<char, bool> castles, int board[][8]);
 
 // how pieces moves
 const unordered_map<int, vector<int>> pieceMoves = {
@@ -23,6 +24,8 @@ const unordered_map<int, vector<int>> pieceMoves = {
     {4, {1,0,0,1,-1,0,0,-1}},
     {5, {1,1,-1,-1,1,-1,-1,1,1,0,0,1,-1,0,0,-1}}
 };
+
+const char castlesChars[] = {'Q','K'};
 
 // generate all moves for current player
 vector<Movegen::Move> generateAllMoves(Board::board &board, int player){
@@ -90,7 +93,6 @@ vector<Movegen::Move> generateAllMoves(Board::board &board, int player){
     return moves;
 }
 
-
 bool isValidMove(int &column, int &row, int &player, int board[][8]){
     if(player == -1) return column < 8 && column >= 0 && row >= 0 && row < 8 && board[column][row] >= 0;
     if(player == 1) return  column < 8 && column >= 0 && row >= 0 && row < 8 && board[column][row] <= 0;
@@ -141,18 +143,29 @@ vector<Movegen::Move> generatePawnMoves(int &column, int &row, int &player, int 
         if((player == 1 && column != 6 ) || (player == -1 && column != 1 )) break;
     }    
 
-    // check captures
+    // check captures + en-passant
     vector<int> ms;
     ms = pieceMoves.at(1);
     for(auto mss: ms){
         currColumn = column - player;
         currRow = row + mss;
-        if(!isPieceCapture(currColumn, currRow, player, board)) continue;
+        if(!isPieceCapture(currColumn, currRow, player, board) && (currColumn != enPassantColumn || currRow != enPassantRow)) continue;
         Move m {currRow, currColumn, row, column };
         moves.push_back(m);
     }
-
-    // en-passant
-    // todo
     return moves;
+}
+
+
+vector<Movegen::Move> generateKingCastles(int player, std::unordered_map<char, bool> castles, int board[][8]){
+    // -1 -> lowercase
+    // 1 -> uppercase (default)
+    for(auto c: castlesChars){
+        // not in FEN
+        if(!castles.at(player == 1 ? c : tolower(c))) continue;
+
+        // Oh can i do it, are any pieces in that way to rook(?)
+        // todo
+
+    }
 }
