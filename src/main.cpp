@@ -10,8 +10,16 @@ int main(int argc, char* argv[]){
 		return 0;
 	}
 	std::string task(argv[1]);
-	//std::string FEN(argv[2]);
 	if(task == "FEN"){
+		if(argc > 2){
+			FEN = argv[2];
+			FEN += ' ';
+			for(int i = 3; i <  argc;i++){
+				FEN += argv[i];
+				FEN += ' ';
+			}
+		}
+		std::cout << FEN << "\n";
 		Board::board b = Board::parseFen(FEN);
 		Movegen::generateAllMoves(b, b.player);
 	} 
